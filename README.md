@@ -1,5 +1,8 @@
 # NetGUARD
 
+[![CI/CD](https://github.com/iamusic67/netguard/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/iamusic67/netguard/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 Plateforme de surveillance et d'administration reseau avec Vue.js 3, Express.js, MySQL et Redis.
 
 ---
@@ -78,8 +81,9 @@ Plateforme de surveillance et d'administration reseau avec Vue.js 3, Express.js,
 ### Docker (recommande)
 
 ```bash
-git clone https://github.com/<votre-username>/netguard.git
+git clone https://github.com/iamusic67/netguard.git
 cd netguard
+cp .env.example .env
 docker-compose up -d
 ```
 
@@ -131,20 +135,22 @@ npm run dev:client
 |------|-------|-------------|
 | Admin | `admin@netguard.io` | `Admin@NetGuard2024!` |
 
+> Changez le mot de passe admin apres la premiere connexion.
+
 ---
 
 ## Configuration
 
-Copier `.env.example` vers `.env` :
+Copier `.env.example` vers `.env` et modifier les valeurs :
 
 ```env
 DB_HOST=mysql
 DB_PORT=3306
 DB_USER=netguard_user
-DB_PASSWORD=NetGuard@User2024!
+DB_PASSWORD=your-db-password
 DB_NAME=netguard_db
 REDIS_URL=redis://redis:6379
-JWT_SECRET=votre-cle-secrete
+JWT_SECRET=your-secret-key
 JWT_EXPIRES_IN=7d
 ```
 
@@ -159,15 +165,16 @@ netguard/
 ├── client/                    # Frontend Vue.js
 │   └── src/
 │       ├── components/        # Composants Vue
-│       │   ├── Dashboard.vue  # Layout principal + routing
-│       │   ├── LoginCard.vue  # Authentification
-│       │   ├── AdminPanel.vue # Administration
+│       │   ├── Dashboard.vue
+│       │   ├── LoginCard.vue
+│       │   ├── AdminPanel.vue
 │       │   ├── NetworkView.vue
 │       │   ├── SecurityView.vue
 │       │   ├── DevicesView.vue
 │       │   ├── ReportsView.vue
 │       │   ├── ProfileView.vue
 │       │   ├── NetworkTools.vue
+│       │   ├── SkeletonLoader.vue
 │       │   └── Toast.vue
 │       ├── router/            # Vue Router
 │       ├── stores/            # Stores reactifs (modules)
@@ -176,12 +183,16 @@ netguard/
 │       └── styles/            # CSS global (theme, base)
 ├── server/                    # Backend Express.js
 │   └── src/
-│       ├── routes/            # API REST
-│       ├── services/          # Logique metier
-│       ├── middleware/        # Auth, rate limiting
+│       ├── routes/            # API REST (auth, admin, 2fa, oauth, etc.)
+│       ├── services/          # Logique metier (cache, email, totp, etc.)
+│       ├── middleware/        # Auth, rate limiting, error handling
+│       ├── utils/             # Logger
 │       └── config/            # Base de donnees
 ├── database/                  # Script SQL init
-├── tests/                     # Tests (unit + e2e)
+├── tests/                     # Tests (unit + e2e Cypress)
+├── .github/workflows/         # CI/CD GitHub Actions
+├── config/                    # Dockerignore configs
+├── scripts/                   # Scripts utilitaires
 └── docker-compose.yml
 ```
 
