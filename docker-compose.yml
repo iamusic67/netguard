@@ -1,0 +1,127 @@
+version: '3.8'
+
+services:
+  # ===== MySQL Database =====
+  mysql:
+    image: mysql:8.0
+    container_name: netguard_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: NetGuard@Root2024!
+      MYSQL_DATABASE: netguard_db
+      MYSQL_USER: netguard_user
+      MYSQL_PASSWORD: NetGuard@User2024!
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - netguard_network
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # ===== Redis Cache =====
+  redis:
+    image: redis:7-alpine
+    container_name: netguard_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - netguard_network
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===== phpMyAdmin =====
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: netguard_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: NetGuard@Root2024!
+      UPLOAD_LIMIT: 100M
+    ports:
+      - "8080:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - netguard_network
+
+  # ===== Backend API =====
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: netguard_backend
+    restart: always
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: netguard_user
+      DB_PASSWORD: NetGuard@User2024!
+      DB_NAME: netguard_db
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: NetGuard_JWT_Secret_Key_2024_Very_Secure!
+      JWT_EXPIRES_IN: 7d
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USER: ""
+      SMTP_PASSWORD: ""
+      FRONTEND_URL: http://localhost:5173
+      RECAPTCHA_SECRET_KEY: ""
+      GOOGLE_CLIENT_ID: ""
+      GOOGLE_CLIENT_SECRET: ""
+      MICROSOFT_CLIENT_ID: ""
+      MICROSOFT_CLIENT_SECRET: ""
+      GITHUB_CLIENT_ID: ""
+      GITHUB_CLIENT_SECRET: ""
+      SENTRY_DSN: ""
+    ports:
+      - "3000:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - netguard_network
+
+  # ===== Frontend Vue.js =====
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: netguard_frontend
+    restart: always
+    environment:
+      VITE_API_URL: http://localhost:3000/api
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - netguard_network
+
+networks:
+  netguard_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  redis_data:

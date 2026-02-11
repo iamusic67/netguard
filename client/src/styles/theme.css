@@ -1,0 +1,56 @@
+:root {
+  /* Palette NetGUARD - Professional Dark Theme */
+  --ng-bg-darker: #0a0e14;
+  --ng-bg-dark: #0d1117;
+  --ng-bg-card: #161b22;
+  --ng-bg-elevated: #1c2128;
+  --ng-border: #30363d;
+  --ng-border-light: #484f58;
+
+  /* Accent Colors - Muted, professional */
+  --ng-cyan: #58a6b0;
+  --ng-cyan-dim: #3d8a94;
+  --ng-purple: #8b6fc0;
+  --ng-purple-dim: #6a52a3;
+  --ng-green: #3da382;
+  --ng-green-bright: #4cb88e;
+  --ng-red: #d45555;
+  --ng-orange: #d48a3c;
+  --ng-yellow: #c9a630;
+
+  /* Text */
+  --ng-text: #e6edf3;
+  --ng-text-muted: #8b949e;
+  --ng-text-dim: #6e7681;
+
+  /* Legacy compatibility */
+  --ng-blue-night: #0d1117;
+  --ng-blue-light: #58a6b0;
+  --ng-green-neon: #3da382;
+  --ng-white: #e6edf3;
+  --ng-gray-dark: #161b22;
+  --ng-red-accent: #d45555;
+
+  /* Typo */
+  --font-body: "Inter", "SF Pro Display", system-ui, -apple-system, sans-serif;
+  --font-display: "Inter", "SF Pro Display", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+
+  /* Spacing */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-glow-cyan: 0 0 12px rgba(88, 166, 176, 0.08);
+  --shadow-glow-purple: 0 0 12px rgba(139, 111, 192, 0.08);
+
+  /* Focus */
+  --focus: 0 0 0 2px rgba(88, 166, 176, 0.4);
+}

@@ -1,0 +1,33 @@
+{
+  "name": "netguard-login",
+  "version": "2.0.0",
+  "description": "Application d'authentification sécurisée NetGUARD",
+  "private": true,
+  "scripts": {
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose up -d --build",
+    "docker:reset": "docker-compose down -v && docker-compose up -d --build",
+    "docker:logs": "docker-compose logs -f",
+    "install:client": "cd client && npm install",
+    "install:server": "cd server && npm install",
+    "install:all": "npm run install:client && npm run install:server",
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
+    "test:client": "cd client && npm run test",
+    "test:server": "cd server && npm run test",
+    "test:e2e": "npx cypress run",
+    "test:e2e:open": "npx cypress open",
+    "test:all": "npm run test:client && npm run test:server && npm run test:e2e"
+  },
+  "keywords": [
+    "netguard",
+    "authentication",
+    "vue",
+    "express",
+    "mysql",
+    "redis"
+  ],
+  "author": "NetGUARD",
+  "license": "MIT"
+}

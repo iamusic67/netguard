@@ -1,0 +1,33 @@
+{
+  "name": "netguard-login",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:e2e": "cypress open",
+    "test:e2e:run": "cypress run"
+  },
+  "dependencies": {
+    "@sentry/vue": "^7.91.0",
+    "chart.js": "^4.5.1",
+    "vue": "^3.5.0",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.1.0",
+    "@vitest/coverage-v8": "^1.1.0",
+    "@vitest/ui": "^1.1.0",
+    "@vue/test-utils": "^2.4.3",
+    "cypress": "^13.6.1",
+    "vite": "^5.4.0",
+    "vite-plugin-pwa": "^0.17.4",
+    "vitest": "^1.1.0",
+    "workbox-window": "^7.0.0"
+  }
+}

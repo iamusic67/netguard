@@ -1,0 +1,87 @@
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ng-text);
+  overflow-x: hidden;
+  position: relative;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  background: var(--ng-bg-darker);
+  background-image:
+    radial-gradient(ellipse 800px 600px at 20% 20%, rgba(88, 166, 176, 0.04), transparent),
+    radial-gradient(ellipse 600px 400px at 80% 80%, rgba(139, 111, 192, 0.03), transparent);
+  background-size: 100% 100%, 100% 100%;
+  background-attachment: fixed;
+}
+
+a {
+  color: var(--ng-cyan);
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+a:hover {
+  color: var(--ng-cyan-dim);
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ng-bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ng-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ng-border-light);
+}
+
+/* Selection */
+::selection {
+  background: rgba(88, 166, 176, 0.25);
+  color: var(--ng-text);
+}
+
+/* Focus visible */
+:focus-visible {
+  outline: none;
+}
+
+/* Apply focus ring only to buttons and links, not inputs */
+button:focus-visible,
+a:focus-visible {
+  box-shadow: var(--focus);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
