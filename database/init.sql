@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
     first_name VARCHAR(100) DEFAULT NULL,
     last_name VARCHAR(100) DEFAULT NULL,
     avatar_url VARCHAR(500) DEFAULT NULL,
-    role ENUM('admin', 'user', 'viewer') DEFAULT 'user',
+    role ENUM('admin', 'user', 'moderator') DEFAULT 'user',
     is_active BOOLEAN DEFAULT TRUE,
     is_verified BOOLEAN DEFAULT FALSE,
     must_change_password BOOLEAN DEFAULT FALSE,
@@ -118,35 +118,6 @@ CREATE TABLE IF NOT EXISTS devices (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     INDEX idx_user_id (user_id),
     INDEX idx_status (status)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- =============================================
--- Table: user_2fa (Two-Factor Authentication)
--- =============================================
-CREATE TABLE IF NOT EXISTS user_2fa (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL UNIQUE,
-    secret VARCHAR(64) NOT NULL,
-    is_enabled BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- =============================================
--- Table: user_2fa_backup_codes
--- =============================================
-CREATE TABLE IF NOT EXISTS user_2fa_backup_codes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    code_hash VARCHAR(64) NOT NULL,
-    used BOOLEAN DEFAULT FALSE,
-    used_at DATETIME DEFAULT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    INDEX idx_user_id (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================

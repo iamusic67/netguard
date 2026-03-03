@@ -115,6 +115,56 @@
         <span class="bottomNavLabel">{{ item.label }}</span>
       </button>
     </nav>
+
+    <!-- ===== FORCE PASSWORD CHANGE MODAL ===== -->
+    <div v-if="showForcePasswordModal" class="forcePwOverlay">
+      <div class="forcePwModal">
+        <div class="forcePwHeader">
+          <h2>Changement de mot de passe obligatoire</h2>
+        </div>
+        <div class="forcePwBody">
+          <p class="forcePwDesc">
+            Votre mot de passe est temporaire. Vous devez le changer avant de continuer.
+          </p>
+          <form @submit.prevent="onForceChangePassword" novalidate>
+            <div class="forcePwField">
+              <label for="newPw">Nouveau mot de passe</label>
+              <input
+                id="newPw"
+                v-model="newPassword"
+                type="password"
+                placeholder="Minimum 8 caracteres"
+                autocomplete="new-password"
+              />
+              <small v-if="newPassword && !isNewPasswordValid" class="forcePwError">
+                8 caracteres min., 1 majuscule, 1 minuscule, 1 chiffre
+              </small>
+            </div>
+            <div class="forcePwField">
+              <label for="confirmPw">Confirmer le mot de passe</label>
+              <input
+                id="confirmPw"
+                v-model="confirmNewPassword"
+                type="password"
+                placeholder="Retapez le mot de passe"
+                autocomplete="new-password"
+              />
+              <small v-if="confirmNewPassword && newPassword !== confirmNewPassword" class="forcePwError">
+                Les mots de passe ne correspondent pas
+              </small>
+            </div>
+            <button
+              type="submit"
+              class="forcePwSubmit"
+              :disabled="!canSubmitForceChange || forceChanging"
+            >
+              {{ forceChanging ? 'Modification...' : 'Changer le mot de passe' }}
+            </button>
+            <p v-if="forceChangeError" class="forcePwErrorMsg">{{ forceChangeError }}</p>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -124,6 +174,7 @@ import { useRoute, useRouter } from 'vue-router';
 import logoUrl from '../assets/netguard-logo.png';
 import AdminPanel from './AdminPanel.vue';
 import { icons } from '../utils/icons.js';
+import { authApi } from '../services/api.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -191,6 +242,47 @@ const navItems = computed(() => {
   return items;
 });
 
+/* ===== Force Password Change ===== */
+const showForcePasswordModal = ref(false);
+const newPassword = ref('');
+const confirmNewPassword = ref('');
+const forceChanging = ref(false);
+const forceChangeError = ref('');
+
+const isNewPasswordValid = computed(() => {
+  const pwd = newPassword.value;
+  return pwd.length >= 8 && /[a-z]/.test(pwd) && /[A-Z]/.test(pwd) && /\d/.test(pwd);
+});
+
+const canSubmitForceChange = computed(() => {
+  return isNewPasswordValid.value &&
+    confirmNewPassword.value === newPassword.value &&
+    confirmNewPassword.value.length >= 8;
+});
+
+async function onForceChangePassword() {
+  if (!canSubmitForceChange.value) return;
+  forceChanging.value = true;
+  forceChangeError.value = '';
+
+  try {
+    await authApi.forceChangePassword(newPassword.value);
+
+    // Update localStorage user object
+    const storedUser = JSON.parse(localStorage.getItem('ng-user') || '{}');
+    storedUser.mustChangePassword = false;
+    localStorage.setItem('ng-user', JSON.stringify(storedUser));
+
+    showForcePasswordModal.value = false;
+    newPassword.value = '';
+    confirmNewPassword.value = '';
+  } catch (error) {
+    forceChangeError.value = error.message || 'Erreur lors du changement de mot de passe';
+  } finally {
+    forceChanging.value = false;
+  }
+}
+
 /* ===== Logout ===== */
 function logout() {
   emit('logout');
@@ -203,6 +295,11 @@ onMounted(() => {
     theme.value = saved;
   }
   document.documentElement.setAttribute('data-theme', theme.value);
+
+  // Check if user must change password
+  if (props.user?.mustChangePassword) {
+    showForcePasswordModal.value = true;
+  }
 });
 </script>
 
@@ -786,5 +883,121 @@ onMounted(() => {
     min-width: 48px;
     padding: 6px 8px;
   }
+}
+
+/* ===========================
+   FORCE PASSWORD CHANGE MODAL
+   =========================== */
+.forcePwOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(6px);
+}
+
+.forcePwModal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: min(440px, 90%);
+  overflow: hidden;
+}
+
+.forcePwHeader {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.forcePwHeader h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.forcePwBody {
+  padding: 24px;
+}
+
+.forcePwDesc {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.forcePwField {
+  margin-bottom: 16px;
+}
+
+.forcePwField label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.forcePwField input {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.dashboard.light .forcePwField input {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.forcePwField input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.forcePwError {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #d45555;
+}
+
+.forcePwSubmit {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, var(--accent) 0%, #3d8a94 100%);
+  border: none;
+  border-radius: 6px;
+  color: #0d1117;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 200ms ease;
+  margin-top: 8px;
+}
+
+.forcePwSubmit:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.forcePwSubmit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.forcePwErrorMsg {
+  text-align: center;
+  color: #d45555;
+  font-size: 13px;
+  margin: 12px 0 0;
 }
 </style>

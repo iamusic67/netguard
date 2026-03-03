@@ -83,6 +83,13 @@
               >
                 <span v-html="user.is_active ? icons.ban : icons.check"></span>
               </button>
+              <button
+                class="action-btn delete"
+                @click="openDeleteModal(user)"
+                title="Supprimer"
+                :disabled="isCurrentUser(user)"
+                v-html="icons.trash"
+              ></button>
             </td>
           </tr>
         </tbody>
@@ -113,7 +120,7 @@
             <label>Rôle</label>
             <select v-model="editForm.role" :disabled="isEditingSelf">
               <option value="user">Utilisateur</option>
-              <option value="viewer">Lecteur</option>
+              <option value="moderator">Moderateur</option>
             </select>
             <span v-if="isEditingSelf" class="field-hint">Vous ne pouvez pas modifier votre propre rôle.</span>
           </div>
@@ -185,6 +192,28 @@
       </div>
     </div>
 
+    <!-- Delete User Modal -->
+    <div v-if="showDeleteModal" class="modal-overlay" @click.self="closeModals">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Supprimer l'utilisateur</h2>
+          <button class="close-btn" @click="closeModals">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-desc delete-warning">
+            Etes-vous sur de vouloir supprimer le compte de <strong>{{ selectedUser?.full_name }}</strong> ?
+            Cette action est irreversible.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" @click="closeModals">Annuler</button>
+          <button class="btn-danger" @click="confirmDeleteUser" :disabled="deleting">
+            {{ deleting ? 'Suppression...' : 'Supprimer' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Status Message -->
     <div v-if="statusMessage" class="status-toast" :class="statusType">
       {{ statusMessage }}
@@ -209,7 +238,9 @@ const loading = ref(false);
 const searchQuery = ref('');
 const showEditModal = ref(false);
 const showResetModal = ref(false);
+const showDeleteModal = ref(false);
 const selectedUser = ref(null);
+const deleting = ref(false);
 const saving = ref(false);
 const resetting = ref(false);
 const resetMethod = ref('');
@@ -294,9 +325,38 @@ function openResetModal(user) {
 function closeModals() {
   showEditModal.value = false;
   showResetModal.value = false;
+  showDeleteModal.value = false;
   selectedUser.value = null;
   resetMethod.value = '';
   generatedPassword.value = '';
+}
+
+function isCurrentUser(user) {
+  if (!props.currentUser) return false;
+  return user.id === props.currentUser.id ||
+         user.uuid === props.currentUser.id;
+}
+
+function openDeleteModal(user) {
+  if (isCurrentUser(user)) return;
+  selectedUser.value = user;
+  showDeleteModal.value = true;
+}
+
+async function confirmDeleteUser() {
+  if (!selectedUser.value) return;
+  deleting.value = true;
+
+  try {
+    await adminApi.deleteUser(selectedUser.value.id);
+    showStatus('Utilisateur supprime avec succes', 'success');
+    closeModals();
+    await loadUsers();
+  } catch (error) {
+    showStatus(error.message || 'Erreur lors de la suppression', 'error');
+  } finally {
+    deleting.value = false;
+  }
 }
 
 async function saveUser() {
@@ -581,9 +641,9 @@ onMounted(() => {
   color: var(--ng-cyan);
 }
 
-.role-badge.viewer {
-  background: rgba(139, 148, 158, 0.15);
-  color: var(--ng-text-muted);
+.role-badge.moderator {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--ng-orange, #f59e0b);
 }
 
 .status-badge {
@@ -628,6 +688,25 @@ onMounted(() => {
 .action-btn:hover {
   border-color: var(--ng-cyan);
   background: rgba(0, 212, 255, 0.1);
+}
+
+.action-btn.delete {
+  color: var(--ng-red, #d45555);
+}
+
+.action-btn.delete:hover {
+  border-color: var(--ng-red, #d45555);
+  background: rgba(212, 85, 85, 0.1);
+}
+
+.action-btn.delete:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.action-btn.delete:disabled:hover {
+  border-color: var(--ng-border);
+  background: transparent;
 }
 
 /* Modals */
@@ -774,6 +853,31 @@ onMounted(() => {
 .btn-primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.btn-danger {
+  padding: 10px 20px;
+  background: var(--ng-red, #d45555);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 150ms ease;
+}
+
+.btn-danger:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.delete-warning {
+  color: var(--ng-red, #d45555) !important;
 }
 
 /* Reset Options */

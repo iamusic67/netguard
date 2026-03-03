@@ -197,6 +197,16 @@ export const authApi = {
   },
 
   /**
+   * Force change password (temp password users)
+   */
+  forceChangePassword: async (newPassword) => {
+    return request('/auth/force-change-password', {
+      method: 'POST',
+      body: JSON.stringify({ newPassword })
+    });
+  },
+
+  /**
    * Check if user is authenticated
    */
   isAuthenticated: () => !!getToken(),
@@ -210,53 +220,6 @@ export const authApi = {
    * Clear authentication
    */
   clear: clearAuth
-};
-
-/**
- * 2FA API
- */
-export const twoFactorApi = {
-  /**
-   * Get 2FA status
-   */
-  getStatus: () => request('/auth/2fa/status'),
-
-  /**
-   * Setup 2FA (get secret and QR code)
-   */
-  setup: () => request('/auth/2fa/setup', { method: 'POST' }),
-
-  /**
-   * Verify 2FA setup with code
-   */
-  verifySetup: (code) => request('/auth/2fa/verify-setup', {
-    method: 'POST',
-    body: JSON.stringify({ code })
-  }),
-
-  /**
-   * Verify 2FA code during login
-   */
-  verify: ({ userId, code, tempToken }) => request('/auth/2fa/verify', {
-    method: 'POST',
-    body: JSON.stringify({ userId, code, tempToken })
-  }),
-
-  /**
-   * Disable 2FA
-   */
-  disable: ({ password, code }) => request('/auth/2fa/disable', {
-    method: 'POST',
-    body: JSON.stringify({ password, code })
-  }),
-
-  /**
-   * Regenerate backup codes
-   */
-  regenerateBackupCodes: (code) => request('/auth/2fa/backup-codes/regenerate', {
-    method: 'POST',
-    body: JSON.stringify({ code })
-  })
 };
 
 /**
@@ -607,7 +570,6 @@ export const healthCheck = () => request('/health');
 
 export default {
   auth: authApi,
-  twoFactor: twoFactorApi,
   oauth: oauthApi,
   session: sessionApi,
   profile: profileApi,

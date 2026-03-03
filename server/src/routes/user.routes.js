@@ -279,7 +279,7 @@ router.put('/:userId', authenticate, authorize('admin'), asyncHandler(async (req
   const updates = [];
   const params = [];
 
-  if (role && ['admin', 'user', 'viewer'].includes(role)) {
+  if (role && ['admin', 'user', 'moderator'].includes(role)) {
     updates.push('role = ?');
     params.push(role);
   }

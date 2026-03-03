@@ -27,12 +27,6 @@ router.get('/', authenticate, asyncHandler(async (req, res) => {
     [req.user.id]
   );
 
-  // Get 2FA status
-  const twoFactor = await db.queryOne(
-    'SELECT is_enabled FROM user_2fa WHERE user_id = ?',
-    [req.user.id]
-  );
-
   res.json({
     success: true,
     data: {
@@ -47,7 +41,6 @@ router.get('/', authenticate, asyncHandler(async (req, res) => {
         lastLogin: user.last_login
       },
       security: {
-        twoFactorEnabled: twoFactor?.is_enabled || false,
         oauthConnections: oauthConnections.map(o => o.provider)
       }
     }

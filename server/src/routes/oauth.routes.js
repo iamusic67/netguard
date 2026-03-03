@@ -177,29 +177,6 @@ router.get('/callback/:provider', asyncHandler(async (req, res) => {
       return res.redirect(`${FRONTEND_URL}/login?error=account_disabled`);
     }
 
-    // Check for 2FA
-    const twoFactor = await db.queryOne(
-      'SELECT is_enabled FROM user_2fa WHERE user_id = ? AND is_enabled = TRUE',
-      [user.id]
-    );
-
-    if (twoFactor?.is_enabled) {
-      // Generate temporary token for 2FA
-      const tempToken = jwt.sign(
-        {
-          type: '2fa_pending',
-          userId: user.uuid,
-          dbUserId: user.id,
-          ip: req.ip,
-          userAgent: req.get('user-agent')
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: '5m' }
-      );
-
-      return res.redirect(`${FRONTEND_URL}/login?2fa=required&token=${tempToken}&user=${user.uuid}`);
-    }
-
     // Generate JWT
     const token = jwt.sign(
       { userId: user.id },

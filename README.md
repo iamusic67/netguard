@@ -14,7 +14,7 @@ Plateforme d'authentification et d'administration utilisateurs avec Vue.js 3, Ex
 | **Frontend** | Vue.js 3 (Composition API), Vue Router 4, Vite |
 | **Backend** | Express.js, JWT, WebSocket, Rate Limiting, Helmet.js |
 | **Base de donnees** | MySQL 8.0, Redis (cache/sessions) |
-| **Infra** | Docker Compose, GitHub Actions CI/CD, Sentry |
+| **Infra** | Docker Compose, GitHub Actions CI/CD |
 
 ---
 
@@ -25,8 +25,8 @@ Plateforme d'authentification et d'administration utilisateurs avec Vue.js 3, Ex
 - Connexion JWT avec refresh token et "Se souvenir de moi"
 - Mot de passe oublie / reinitialisation par email
 - Verification d'email
-- 2FA TOTP (Google Authenticator)
 - OAuth (Google, Microsoft, GitHub)
+- Changement de mot de passe obligatoire apres reinitialisation par admin
 - Rate limiting et protection Helmet.js
 - Verrouillage de compte apres 5 tentatives echouees
 
@@ -42,6 +42,7 @@ Plateforme d'authentification et d'administration utilisateurs avec Vue.js 3, Ex
 - Modification des informations utilisateur (prenom, nom, email, role)
 - Reinitialisation de mot de passe par email ou mot de passe temporaire
 - Activation/desactivation des comptes
+- Suppression de comptes utilisateurs
 
 ---
 
@@ -127,7 +128,7 @@ JWT_SECRET=your-secret-key
 JWT_EXPIRES_IN=7d
 ```
 
-Variables optionnelles : `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `MICROSOFT_CLIENT_ID`, `MICROSOFT_CLIENT_SECRET`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `RECAPTCHA_SECRET_KEY`, `SENTRY_DSN`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`.
+Variables optionnelles : `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `MICROSOFT_CLIENT_ID`, `MICROSOFT_CLIENT_SECRET`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`.
 
 ---
 
@@ -148,8 +149,8 @@ netguard/
 │       └── styles/            # CSS global (theme, base)
 ├── server/                    # Backend Express.js
 │   └── src/
-│       ├── routes/            # API REST (auth, admin, 2fa, oauth, etc.)
-│       ├── services/          # Logique metier (cache, email, totp, etc.)
+│       ├── routes/            # API REST (auth, admin, oauth, etc.)
+│       ├── services/          # Logique metier (cache, email, oauth, etc.)
 │       ├── middleware/        # Auth, rate limiting, error handling
 │       ├── utils/             # Logger
 │       └── config/            # Base de donnees

@@ -497,4 +497,51 @@ router.post('/refresh', authenticate, asyncHandler(async (req, res) => {
   });
 }));
 
+// ===== FORCE CHANGE PASSWORD (temp password users) =====
+router.post('/force-change-password', [
+  authenticate,
+  body('newPassword')
+    .isLength({ min: 8 })
+    .withMessage('Le mot de passe doit contenir au moins 8 caracteres')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('Le mot de passe doit contenir une majuscule, une minuscule et un chiffre')
+], asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new ApiError(400, 'Donnees invalides', errors.array());
+  }
+
+  const { newPassword } = req.body;
+
+  // Verify user must change password
+  const user = await db.queryOne(
+    'SELECT id, must_change_password, password FROM users WHERE id = ?',
+    [req.user.id]
+  );
+
+  if (!user || !user.must_change_password) {
+    throw new ApiError(400, 'Aucun changement de mot de passe requis');
+  }
+
+  // Ensure new password differs from current
+  const isSame = await bcrypt.compare(newPassword, user.password);
+  if (isSame) {
+    throw new ApiError(400, 'Le nouveau mot de passe doit etre different du mot de passe temporaire');
+  }
+
+  // Hash and save
+  const hashedPassword = await bcrypt.hash(newPassword, 12);
+  await db.query(
+    'UPDATE users SET password = ?, must_change_password = FALSE, updated_at = NOW() WHERE id = ?',
+    [hashedPassword, req.user.id]
+  );
+
+  logger.info('Forced password change completed:', { userId: req.user.id });
+
+  res.json({
+    success: true,
+    message: 'Mot de passe modifie avec succes'
+  });
+}));
+
 module.exports = router;

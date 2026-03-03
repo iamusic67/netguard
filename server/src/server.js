@@ -13,7 +13,6 @@ const { logger } = require('./utils/logger');
 const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
-const twoFactorRoutes = require('./routes/2fa.routes');
 const oauthRoutes = require('./routes/oauth.routes');
 const sessionRoutes = require('./routes/session.routes');
 const profileRoutes = require('./routes/profile.routes');
@@ -107,7 +106,6 @@ app.get('/api/health', (req, res) => {
 
 // ===== API Routes =====
 app.use('/api/auth', authLimiter, authRoutes);
-app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/auth/oauth', oauthRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/profile', profileRoutes);
