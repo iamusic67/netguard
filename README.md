@@ -1,88 +1,84 @@
 # NetGUARD
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-
-Plateforme d'authentification et d'administration utilisateurs avec Vue.js 3, Express.js, MySQL et Redis.
-
----
-
 ## Stack technique
 
 | Couche | Technologies |
 |--------|-------------|
 | **Frontend** | Vue.js 3 (Composition API), Vue Router 4, Vite |
 | **Backend** | Express.js, JWT, WebSocket, Rate Limiting, Helmet.js |
-| **Base de donnees** | MySQL 8.0, Redis (cache/sessions) |
+| **Base de données** | MySQL 8.0, Redis (cache/sessions) |
 | **Infra** | Docker Compose |
 
 ---
 
-## Fonctionnalites
+## Fonctionnalités
 
 ### Authentification
-- Inscription avec validation (email, mot de passe fort, prenom/nom)
+- Inscription avec validation (email, mot de passe fort, prénom/nom)
 - Connexion JWT avec refresh token et "Se souvenir de moi"
-- Mot de passe oublie / reinitialisation par email
-- Verification d'email
+- Mot de passe oublié / réinitialisation par email
+- Vérification d'email
 - OAuth (Google, Microsoft, GitHub)
-- Changement de mot de passe obligatoire apres reinitialisation par admin
+- Changement de mot de passe obligatoire après réinitialisation par admin
 - Rate limiting et protection Helmet.js
-- Verrouillage de compte apres 5 tentatives echouees
+- Verrouillage de compte après 5 tentatives échouées
 
 ### Dashboard
 - Dashboard vide avec message de bienvenue
-- Theme sombre/clair avec persistance
+- Thème sombre/clair avec persistance
 - Navigation responsive (sidebar desktop, hamburger + bottom nav mobile)
-- Notifications toast temps reel via WebSocket
+- Notifications toast temps réel via WebSocket
 
 ### Administration (admin uniquement)
 - Onglet "Admin Panel" visible uniquement pour les administrateurs
 - Liste des utilisateurs avec recherche
-- Modification des informations utilisateur (prenom, nom, email, role)
-- Reinitialisation de mot de passe par email ou mot de passe temporaire
-- Activation/desactivation des comptes
+- Modification des informations utilisateur (prénom, nom, email, rôle)
+- Réinitialisation de mot de passe par email ou mot de passe temporaire
+- Activation/désactivation des comptes
 - Suppression de comptes utilisateurs
 
 ---
 
 ## Installation
 
-### Prerequis
+### Prérequis
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (recommande)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (recommandé)
 - OU Node.js 18+ et MySQL 8.0
 
-### Docker (recommande)
+### Docker (recommandé)
 
 ```bash
 git clone https://github.com/iamusic67/netguard.git
 cd netguard
 cp .env.example .env
 docker-compose up -d
+# ou pour rebuild :
+docker-compose up --build -d
 ```
 
-| Service | URL |
-|---------|-----|
-| Frontend | http://localhost:5173 |
-| API | http://localhost:3000/api |
-| phpMyAdmin | http://localhost:8080 |
+| Service    | URL                        |
+|------------|----------------------------|
+| Frontend   | http://localhost:5173      |
+| API        | http://localhost:3000/api  |
+| phpMyAdmin | http://localhost:8080      |
 
-### Developpement local
+### Développement local
 
 ```bash
-# Installer les dependances
+# Installer les dépendances
 npm run install:all
 
 # Configurer l'environnement
 cp .env.example .env
 
-# Demarrer MySQL et Redis via Docker
+# Démarrer MySQL et Redis via Docker
 docker-compose up -d mysql redis
 
-# Demarrer le backend
+# Démarrer le backend
 npm run dev:server
 
-# Demarrer le frontend (nouveau terminal)
+# Démarrer le frontend (nouveau terminal)
 npm run dev:client
 ```
 
@@ -92,23 +88,23 @@ npm run dev:client
 
 | Commande | Description |
 |----------|-------------|
-| `npm run docker:up` | Demarrer tous les services Docker |
-| `npm run docker:down` | Arreter tous les services |
-| `npm run docker:build` | Rebuild et redemarrer |
-| `npm run docker:reset` | Reset complet (supprime les donnees) |
-| `npm run install:all` | Installer toutes les dependances |
+| `npm run docker:up` | Démarrer tous les services Docker |
+| `npm run docker:down` | Arrêter tous les services |
+| `npm run docker:build` | Rebuild et redémarrer |
+| `npm run docker:reset` | Reset complet (supprime les données) |
+| `npm run install:all` | Installer toutes les dépendances |
 | `npm run dev:client` | Frontend en mode dev |
 | `npm run dev:server` | Backend en mode dev |
 
 ---
 
-## Comptes par defaut
+## Comptes par défaut
 
-| Role | Email | Mot de passe |
-|------|-------|-------------|
+| Rôle  | Email               | Mot de passe          |
+|-------|---------------------|-----------------------|
 | Admin | `admin@netguard.io` | `Admin@NetGuard2024!` |
 
-> Changez le mot de passe admin apres la premiere connexion.
+> Changez le mot de passe admin après la première connexion.
 
 ---
 
@@ -138,21 +134,21 @@ netguard/
 ├── client/                    # Frontend Vue.js
 │   └── src/
 │       ├── components/
-│       │   ├── LoginCard.vue  # Formulaire login/inscription/mot de passe oublie
+│       │   ├── LoginCard.vue  # Login / inscription / mot de passe oublié
 │       │   ├── Dashboard.vue  # Dashboard vide + sidebar + admin tab
 │       │   ├── AdminPanel.vue # Gestion des utilisateurs (admin)
 │       │   └── Toast.vue      # Notifications toast
 │       ├── router/            # Vue Router (login, dashboard, admin)
 │       ├── services/          # API client + WebSocket
-│       ├── utils/             # Icones SVG
-│       └── styles/            # CSS global (theme, base)
+│       ├── utils/             # Icônes SVG
+│       └── styles/            # CSS global (thème, base)
 ├── server/                    # Backend Express.js
 │   └── src/
 │       ├── routes/            # API REST (auth, admin, oauth, etc.)
-│       ├── services/          # Logique metier (cache, email, oauth, etc.)
+│       ├── services/          # Logique métier (cache, email, oauth, etc.)
 │       ├── middleware/        # Auth, rate limiting, error handling
 │       ├── utils/             # Logger
-│       └── config/            # Base de donnees
+│       └── config/            # Base de données
 ├── database/                  # Script SQL init
 └── docker-compose.yml
 ```
