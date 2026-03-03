@@ -2,12 +2,12 @@
 
 ## Stack technique
 
-| Couche | Technologies |
-|--------|-------------|
-| **Frontend** | Vue.js 3 (Composition API), Vue Router 4, Vite |
-| **Backend** | Express.js, JWT, WebSocket, Rate Limiting, Helmet.js |
-| **Base de données** | MySQL 8.0, Redis (cache/sessions) |
-| **Infra** | Docker Compose |
+|         Couche      |                Technologies                          |
+|---------------------|------------------------------------------------------|
+| **Frontend**        | Vue.js 3 (Composition API), Vue Router 4, Vite       |
+| **Backend**         | Express.js, JWT, WebSocket, Rate Limiting, Helmet.js |
+| **Base de données** | MySQL 8.0, Redis (cache/sessions)                    |
+| **Infra**           | Docker Compose                                       |
 
 ---
 
@@ -57,7 +57,7 @@ docker-compose up -d
 docker-compose up --build -d
 ```
 
-| Service    | URL                        |
+| Service    |           URL              |
 |------------|----------------------------|
 | Frontend   | http://localhost:5173      |
 | API        | http://localhost:3000/api  |
@@ -86,15 +86,15 @@ npm run dev:client
 
 ## Scripts
 
-| Commande | Description |
-|----------|-------------|
-| `npm run docker:up` | Démarrer tous les services Docker |
-| `npm run docker:down` | Arrêter tous les services |
-| `npm run docker:build` | Rebuild et redémarrer |
+| Commande               |         Description                  |
+|------------------------|--------------------------------------|
+| `npm run docker:up`    | Démarrer tous les services Docker    |
+| `npm run docker:down`  | Arrêter tous les services            |
+| `npm run docker:build` | Rebuild et redémarrer                |
 | `npm run docker:reset` | Reset complet (supprime les données) |
-| `npm run install:all` | Installer toutes les dépendances |
-| `npm run dev:client` | Frontend en mode dev |
-| `npm run dev:server` | Backend en mode dev |
+| `npm run install:all`  | Installer toutes les dépendances     |
+| `npm run dev:client`   | Frontend en mode dev                 |
+| `npm run dev:server`   | Backend en mode dev                  |
 
 ---
 
@@ -103,8 +103,6 @@ npm run dev:client
 | Rôle  | Email               | Mot de passe          |
 |-------|---------------------|-----------------------|
 | Admin | `admin@netguard.io` | `Admin@NetGuard2024!` |
-
-> Changez le mot de passe admin après la première connexion.
 
 ---
 
@@ -122,8 +120,6 @@ REDIS_URL=redis://redis:6379
 JWT_SECRET=your-secret-key
 JWT_EXPIRES_IN=7d
 ```
-
-Variables optionnelles : `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `MICROSOFT_CLIENT_ID`, `MICROSOFT_CLIENT_SECRET`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`.
 
 ---
 
@@ -152,9 +148,4 @@ netguard/
 ├── database/                  # Script SQL init
 └── docker-compose.yml
 ```
-
 ---
-
-## License
-
-MIT
