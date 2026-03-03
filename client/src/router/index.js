@@ -19,14 +19,6 @@ const routes = [
     meta: { guest: true }
   },
   dashRoute('/', 'dashboard'),
-  dashRoute('/network', 'network'),
-  dashRoute('/security', 'security'),
-  dashRoute('/devices', 'devices'),
-  dashRoute('/alerts', 'alerts'),
-  dashRoute('/reports', 'reports'),
-  dashRoute('/tools', 'networkTools'),
-  dashRoute('/settings', 'settings'),
-  dashRoute('/profile', 'profile'),
   dashRoute('/admin', 'admin'),
   {
     path: '/:pathMatch(.*)*',

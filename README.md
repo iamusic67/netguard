@@ -3,7 +3,7 @@
 [![CI/CD](https://github.com/iamusic67/netguard/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/iamusic67/netguard/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Plateforme de surveillance et d'administration reseau avec Vue.js 3, Express.js, MySQL et Redis.
+Plateforme d'authentification et d'administration utilisateurs avec Vue.js 3, Express.js, MySQL et Redis.
 
 ---
 
@@ -11,7 +11,7 @@ Plateforme de surveillance et d'administration reseau avec Vue.js 3, Express.js,
 
 | Couche | Technologies |
 |--------|-------------|
-| **Frontend** | Vue.js 3 (Composition API), Vue Router 4, Chart.js, Vite, PWA |
+| **Frontend** | Vue.js 3 (Composition API), Vue Router 4, Vite |
 | **Backend** | Express.js, JWT, WebSocket, Rate Limiting, Helmet.js |
 | **Base de donnees** | MySQL 8.0, Redis (cache/sessions) |
 | **Infra** | Docker Compose, GitHub Actions CI/CD, Sentry |
@@ -20,54 +20,28 @@ Plateforme de surveillance et d'administration reseau avec Vue.js 3, Express.js,
 
 ## Fonctionnalites
 
-### Dashboard
-- Statistiques en temps reel (protection, connexions, menaces, bande passante)
-- Graphique interactif Chart.js (periodes 24h/7j/30j/90j)
-- Alertes recentes et appareils connectes
-- Actions rapides (scan reseau, pare-feu, rapports)
-
-### Pages dediees
-- **Reseau** : stats reseau, activite recente, interfaces detectees
-- **Securite** : score de securite, menaces, actions rapides (scan, pare-feu, regles)
-- **Appareils** : CRUD complet (ajout, modification, suppression), recherche, filtres
-- **Alertes** : liste complete avec marquage lu
-- **Rapports** : exports CSV/JSON (historique connexions, donnees personnelles RGPD), historique de connexion avec pagination
-
-### Outils reseau
-- Ping, Traceroute, DNS Lookup, Whois, Port Scan, Nmap
-- Interface a onglets avec affichage terminal monospace
-- Validation stricte des entrees, timeouts, buffer limite (512 KB)
-- Execution securisee (`shell: false`)
-
-### Profil utilisateur
-- Modification prenom/nom
-- Changement de mot de passe avec visibilite toggle
-- 2FA TOTP (QR code, codes de secours)
-- Sessions actives (revocation individuelle/globale)
-- Export donnees RGPD
-- Suppression de compte avec confirmation
-
 ### Authentification
-- JWT avec refresh token
+- Inscription avec validation (email, mot de passe fort, prenom/nom)
+- Connexion JWT avec refresh token et "Se souvenir de moi"
+- Mot de passe oublie / reinitialisation par email
+- Verification d'email
 - 2FA TOTP (Google Authenticator)
 - OAuth (Google, Microsoft, GitHub)
-- reCAPTCHA v3
-- Rate limiting et Helmet.js
+- Rate limiting et protection Helmet.js
+- Verrouillage de compte apres 5 tentatives echouees
 
-### Administration
-- Gestion des utilisateurs (CRUD)
-- Reset mot de passe par email
-- Generation de mot de passe temporaire
-- Activation/desactivation des comptes
-
-### UI/UX
+### Dashboard
+- Dashboard vide avec message de bienvenue
 - Theme sombre/clair avec persistance
-- Design professionnel (Inter, icones SVG inline, couleurs sobres)
-- Modules activables/desactivables dans les parametres
 - Navigation responsive (sidebar desktop, hamburger + bottom nav mobile)
-- Transitions de page animees
 - Notifications toast temps reel via WebSocket
-- PWA installable
+
+### Administration (admin uniquement)
+- Onglet "Admin Panel" visible uniquement pour les administrateurs
+- Liste des utilisateurs avec recherche
+- Modification des informations utilisateur (prenom, nom, email, role)
+- Reinitialisation de mot de passe par email ou mot de passe temporaire
+- Activation/desactivation des comptes
 
 ---
 
@@ -125,7 +99,6 @@ npm run dev:client
 | `npm run install:all` | Installer toutes les dependances |
 | `npm run dev:client` | Frontend en mode dev |
 | `npm run dev:server` | Backend en mode dev |
-| `npm run test:all` | Tous les tests |
 
 ---
 
@@ -164,20 +137,12 @@ Variables optionnelles : `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `MICROSOFT_
 netguard/
 ├── client/                    # Frontend Vue.js
 │   └── src/
-│       ├── components/        # Composants Vue
-│       │   ├── Dashboard.vue
-│       │   ├── LoginCard.vue
-│       │   ├── AdminPanel.vue
-│       │   ├── NetworkView.vue
-│       │   ├── SecurityView.vue
-│       │   ├── DevicesView.vue
-│       │   ├── ReportsView.vue
-│       │   ├── ProfileView.vue
-│       │   ├── NetworkTools.vue
-│       │   ├── SkeletonLoader.vue
-│       │   └── Toast.vue
-│       ├── router/            # Vue Router
-│       ├── stores/            # Stores reactifs (modules)
+│       ├── components/
+│       │   ├── LoginCard.vue  # Formulaire login/inscription/mot de passe oublie
+│       │   ├── Dashboard.vue  # Dashboard vide + sidebar + admin tab
+│       │   ├── AdminPanel.vue # Gestion des utilisateurs (admin)
+│       │   └── Toast.vue      # Notifications toast
+│       ├── router/            # Vue Router (login, dashboard, admin)
 │       ├── services/          # API client + WebSocket
 │       ├── utils/             # Icones SVG
 │       └── styles/            # CSS global (theme, base)
@@ -189,10 +154,7 @@ netguard/
 │       ├── utils/             # Logger
 │       └── config/            # Base de donnees
 ├── database/                  # Script SQL init
-├── tests/                     # Tests (unit + e2e Cypress)
 ├── .github/workflows/         # CI/CD GitHub Actions
-├── config/                    # Dockerignore configs
-├── scripts/                   # Scripts utilitaires
 └── docker-compose.yml
 ```
 

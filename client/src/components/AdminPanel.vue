@@ -6,7 +6,7 @@
         <h1>Administration</h1>
         <p>Gestion des utilisateurs</p>
       </div>
-      <button class="back-btn" @click="$emit('close')">
+      <button class="back-btn" @click="$router.push({ name: 'dashboard' })">
         <span>←</span> Retour au dashboard
       </button>
     </header>
