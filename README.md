@@ -1,6 +1,5 @@
 # NetGUARD
 
-[![CI/CD](https://github.com/iamusic67/netguard/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/iamusic67/netguard/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Plateforme d'authentification et d'administration utilisateurs avec Vue.js 3, Express.js, MySQL et Redis.
@@ -14,7 +13,7 @@ Plateforme d'authentification et d'administration utilisateurs avec Vue.js 3, Ex
 | **Frontend** | Vue.js 3 (Composition API), Vue Router 4, Vite |
 | **Backend** | Express.js, JWT, WebSocket, Rate Limiting, Helmet.js |
 | **Base de donnees** | MySQL 8.0, Redis (cache/sessions) |
-| **Infra** | Docker Compose, GitHub Actions CI/CD |
+| **Infra** | Docker Compose |
 
 ---
 
@@ -155,7 +154,6 @@ netguard/
 │       ├── utils/             # Logger
 │       └── config/            # Base de donnees
 ├── database/                  # Script SQL init
-├── .github/workflows/         # CI/CD GitHub Actions
 └── docker-compose.yml
 ```
 
