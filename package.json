@@ -14,11 +14,9 @@
     "install:all": "npm run install:client && npm run install:server",
     "dev:client": "cd client && npm run dev",
     "dev:server": "cd server && npm run dev",
-    "test:client": "cd client && npm run test",
-    "test:server": "cd server && npm run test",
-    "test:e2e": "npx cypress run",
-    "test:e2e:open": "npx cypress open",
-    "test:all": "npm run test:client && npm run test:server && npm run test:e2e"
+    "test:api": "node tests/api.test.js",
+    "test:integration": "node tests/integration.test.js",
+    "test:all": "npm run test:api && npm run test:integration"
   },
   "keywords": [
     "netguard",
